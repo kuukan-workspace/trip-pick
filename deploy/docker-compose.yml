@@ -1,0 +1,22 @@
+networks:
+  infra:
+    external: true
+
+services:
+  trip-pick:
+    image: 192.168.1.101:5000/kuukan-app/trip-pick:latest
+    container_name: trip-pick
+    restart: unless-stopped
+    networks:
+      - infra
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.trip-pick.rule=Host(`trippick.kuukan.dev`)"
+      - "traefik.http.routers.trip-pick.tls.certresolver=cloudflare"
+      - "traefik.http.routers.trip-pick.middlewares=default-chain@file"
+      - "traefik.http.services.trip-pick.loadbalancer.server.port=3000"

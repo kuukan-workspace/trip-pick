@@ -1,0 +1,62 @@
+when:
+  - event: [push, manual]
+    branch: main
+
+steps:
+  - name: lint
+    image: node:22-bookworm
+    commands:
+      - corepack enable
+      - pnpm install --frozen-lockfile
+      - pnpm lint
+
+  - name: build-check
+    image: node:22-bookworm
+    commands:
+      - corepack enable
+      - pnpm install --frozen-lockfile
+      - pnpm build
+
+  - name: build-image
+    image: plugins/docker
+    settings:
+      repo: 192.168.1.101:5000/kuukan-app/trip-pick
+      registry: 192.168.1.101:5000
+      tags: latest
+      dockerfile: Dockerfile
+      context: .
+      insecure: true
+
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 192.168.1.101
+      username: kuukan
+      key:
+        from_secret: ssh_key
+      script:
+        - cd ~/trip-pick && git checkout -- . && git pull origin main
+        - docker compose -f ~/trip-pick/deploy/docker-compose.yml pull
+        - docker compose -f ~/trip-pick/deploy/docker-compose.yml up -d --remove-orphans
+
+  - name: notify
+    image: appleboy/drone-discord
+    settings:
+      webhook_id:
+        from_secret: trippick_discord_webhook_id
+      webhook_token:
+        from_secret: trippick_discord_webhook_token
+      message: "✅ **trip-pick** 배포 완료 ({{commit.sha}})"
+    when:
+      - status: [success]
+
+  - name: notify-failure
+    image: appleboy/drone-discord
+    settings:
+      webhook_id:
+        from_secret: trippick_discord_webhook_id
+      webhook_token:
+        from_secret: trippick_discord_webhook_token
+      message: "❌ **trip-pick** 빌드 또는 배포 실패 ({{commit.sha}})"
+    when:
+      - status: [failure]

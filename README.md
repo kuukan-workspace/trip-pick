@@ -1,79 +1,55 @@
 # TripPick
 
-TripPick은 인기 여행 도시를 기준으로 항공, 숙소, 음식 정보를 한 화면에서 탐색할 수 있도록 돕는 여행 정보 큐레이션 서비스입니다.
+TripPick은 일본 여행 도시를 빠르게 탐색할 수 있는 포트폴리오용 MVP입니다.
 
-현재 MVP 범위는 일본만 포함합니다.
-- 도쿄
-- 오사카
-- 후쿠오카
+이 버전은 **Japan-only** 범위로 아래 3개 도시를 제공합니다.
+- Tokyo
+- Osaka
+- Fukuoka
 
-## 목표
-- 나라 → 도시 → 항공/숙소/음식 구조를 가진 여행 탐색 UX 만들기
-- 포트폴리오용으로 보기 좋은 프론트엔드 프로젝트 시작점 만들기
-- 이후 실제 API 연동(항공권, 숙소, 지도, 리뷰) 가능한 구조로 확장하기
-
-## MVP 포함 예정 기능
-- 메인 페이지: 서비스 소개 + 도시 카드
+## MVP 기능
+- 홈 페이지 브랜딩 + 도시 카드
 - 도시 상세 페이지
-  - 항공권(예시 최저가 카드)
-  - 숙소(호텔/료칸/로컬숙소)
-  - 음식(카테고리/추천 리스트)
-- 음식 상세 정보 카드(요약 리뷰, 대표 메뉴, 위치 정보)
+  - Flights 탭
+  - Stays 탭
+  - Food 탭
+- Food 카드 정보
+  - Category
+  - Summary
+  - Recommended menu
+  - Rating
+  - Location
+  - 지도 이동용 placeholder 버튼 (Coming Soon)
 
-## MVP 제외 범위
-아래 기능은 1차 버전에서는 실제 연동하지 않습니다.
-- 실시간 항공권 가격 API
-- 실시간 호텔 가격 API
-- 네이버/카카오/구글 리뷰 실시간 집계
-- 실시간 길찾기 API
-- 로그인 / 즐겨찾기 / 저장 기능
-
-## 추천 기술 스택
-- Next.js
+## 기술 스택
+- Next.js (App Router)
 - TypeScript
 - Tailwind CSS
-- 정적/목업 데이터(JSON 또는 TS 파일)
-- 배포: Vercel
+- Mock data only (API 연동 없음)
 
-## 제안 폴더 구조
-
+## 로컬 실행
 ```bash
-trippick/
-├─ app/
-│  ├─ layout.tsx
-│  ├─ page.tsx
-│  ├─ cities/
-│  │  └─ [slug]/
-│  │     └─ page.tsx
-│  ├─ globals.css
-├─ components/
-│  ├─ CityCard.tsx
-│  ├─ SectionTitle.tsx
-│  ├─ InfoCard.tsx
-│  ├─ FoodCard.tsx
-├─ data/
-│  └─ japanData.ts
-├─ public/
-├─ README.md
+corepack enable
+pnpm install
+pnpm dev
 ```
 
-## 1차 데이터 전략
-실시간 데이터 대신 예시 데이터를 사용합니다.
-- 항공권: 예시 최저가 / 왕복 기준 문구
-- 숙소: 호텔 / 료칸 / 로컬숙소 예시 카드
-- 음식: 카테고리별 추천 식당 예시 데이터
+브라우저에서 `http://localhost:3000` 접속.
 
-## 향후 확장 아이디어
-- 일본 외 국가 추가 (베트남, 프랑스 등)
-- 도시 검색 기능
-- 음식 필터 (라멘, 덮밥, 이자카야, 카페)
-- 숙소 필터 (호텔, 료칸, 감성숙소)
-- 스카이스캐너 / Amadeus / 지도 API 연동
-- 사용자 저장 기능
+## 기본 검증
+```bash
+pnpm lint
+pnpm build
+```
 
-## 다음 단계
-1. Next.js 프로젝트 초기화
-2. 일본 3개 도시 데이터 작성
-3. 메인 페이지 + 도시 상세 페이지 구현
-4. UI 다듬기
-5. 로컬 실행 및 README 보강
+## 배포 관련 파일
+- `.woodpecker.yml`
+- `Dockerfile`
+- `deploy/docker-compose.yml`
+
+`whyfolio` 구조를 기준으로 `trip-pick` 이름에 맞춰 구성했습니다.
+- 이미지: `192.168.1.101:5000/kuukan-app/trip-pick`
+- 도메인: `trippick.kuukan.dev`
+
+## 참고
+실시간 항공/숙소/지도 API는 아직 연동하지 않은 starter 버전입니다.
